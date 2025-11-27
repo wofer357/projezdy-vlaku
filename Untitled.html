@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Jízdní řád Widget</title>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <style>
+        :root {
+            --poster-yellow: #FFD600; /* Vivid poster yellow */
+            --poster-black: #1a1a1a;
+            --paper-white: #ffffff;
+            --alert-red: #D32F2F;
+            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            font-family: var(--font-main);
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* The main "Card" mimicking a widget */
+        .widget-card {
+            background-color: var(--poster-yellow);
+            width: 100%;
+            max-width: 380px;
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
+            overflow: hidden;
+            position: relative;
+            color: var(--poster-black);
+            border: 4px solid var(--poster-black);
+        }
+
+        /* Header Section */
+        .widget-header {
+            padding: 20px 24px 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .location-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 1px;
+            opacity: 0.8;
+            margin: 0;
+        }
+
+        .day-indicator {
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--poster-black);
+            color: var(--poster-yellow);
+            padding: 4px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+
+        /* Main Countdown Section */
+        .countdown-section {
+            text-align: center;
+            padding: 10px 0 30px;
+        }
+
+        .countdown-time {
+            font-size: 72px;
+            font-weight: 800;
+            line-height: 1;
+            font-variant-numeric: tabular-nums;
+            letter-spacing: -2px;
+        }
+
+        .countdown-label {
+            font-size: 16px;
+            font-weight: 600;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        /* Train Info Box */
+        .info-box {
+            background: var(--paper-white);
+            margin: 0 16px 16px;
+            border-radius: 16px;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+            border: 2px solid var(--poster-black);
+        }
+
+        .primary-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 2px dashed #eee;
+            padding-bottom: 15px;
+        }
+
+        .train-destination {
+            font-size: 24px;
+            font-weight: 800;
+        }
+
+        .train-departure-time {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--poster-black);
+            background: #eee;
+            padding: 4px 10px;
+            border-radius: 8px;
+        }
+
+        /* Next Trains List */
+        .next-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .list-label {
+            font-size: 11px;
+            text-transform: uppercase;
+            color: #666;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .next-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            font-weight: 500;
+            color: #444;
+            padding: 4px 0;
+        }
+        
+        .next-item span:last-child {
+            font-weight: 700;
+            color: var(--poster-black);
+        }
+
+        /* Error/Empty State */
+        .empty-state {
+            display: none;
+            text-align: center;
+            padding: 40px 20px;
+        }
+        
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 12px;
+            font-size: 11px;
+            opacity: 0.6;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="widget-card">
+        <div class="widget-header">
+            <h1 class="location-title">Odjezdy Vlaků</h1>
+            <div id="day-badge" class="day-indicator">Dnes</div>
+        </div>
+
+        <!-- Main Display -->
+        <div id="active-view">
+            <div class="countdown-section">
+                <div id="countdown" class="countdown-time">--</div>
+                <div id="status-text" class="countdown-label">minut do odjezdu</div>
+            </div>
+
+            <div class="info-box">
+                <!-- Big Next Train -->
+                <div class="primary-info">
+                    <div>
+                        <div style="font-size: 12px; color:#666; margin-bottom:4px;">SMĚR</div>
+                        <div id="next-dir" class="train-destination">--</div>
+                    </div>
+                    <div>
+                        <div style="font-size: 12px; color:#666; margin-bottom:4px; text-align:right;">ODJEZD</div>
+                        <div id="next-time" class="train-departure-time">--:--</div>
+                    </div>
+                </div>
+
+                <!-- Upcoming list -->
+                <div class="next-list">
+                    <div class="list-label">Následující spoje</div>
+                    <div id="upcoming-container">
+                        <!-- JS fills this -->
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Empty State (No more trains) -->
+        <div id="empty-view" class="empty-state">
+            <span class="empty-state-icon">😴</span>
+            <strong>Pro dnešek hotovo</strong>
+            <p style="font-size: 14px; opacity: 0.8; margin-top:5px;">Další vlak jede až zítra ráno.</p>
+        </div>
+
+        <div class="footer">
+            Data z plakátu • Aktualizace automatická
+        </div>
+    </div>
+
+    <script>
+        // --- KONFIGURACE DAT ---
+        // Zde přepiš data z fotky. 
+        // formát: { time: "HH:MM", dir: "Kam jede", days: "typ_dne" }
+        // typy dnů: "workday" (Po-Pá), "weekend" (So-Ne + Svátky), "daily" (Denně)
+        
+        const scheduleData = [
+            // Ráno
+            { time: "06:13", dir: "Výstav.", days: "workday" },
+            { time: "06:43", dir: "Výstav.", days: "daily" },
+            { time: "07:13", dir: "Výstav.", days: "weekend" },
+            { time: "07:28", dir: "Výstav.", days: "workday" },
+            { time: "07:43", dir: "Výstav.", days: "workday" },
+            
+            // Dopoledne
+            { time: "08:13", dir: "Výstav.", days: "daily" },
+            { time: "08:43", dir: "Výstav.", days: "daily" },
+            { time: "09:13", dir: "Dejvice", days: "daily" },
+            { time: "09:43", dir: "Výstav.", days: "daily" },
+            { time: "10:13", dir: "Dejvice", days: "daily" },
+            
+            // Odpoledne
+            { time: "14:07", dir: "Dejvice", days: "daily" },
+            { time: "14:37", dir: "Dejvice", days: "daily" },
+            { time: "15:07", dir: "Dejvice", days: "workday" },
+            { time: "15:37", dir: "Dejvice", days: "daily" },
+            
+            // Večer
+            { time: "17:15", dir: "Výstav.", days: "daily" },
+            { time: "18:15", dir: "Výstav.", days: "daily" },
+            { time: "19:15", dir: "Dejvice", days: "daily" },
+            { time: "22:45", dir: "Garaz", days: "daily" }
+        ];
+
+        // --- LOGIKA APLIKACE ---
+
+        function getDayType() {
+            const now = new Date();
+            const day = now.getDay(); // 0 = Sunday, 6 = Saturday
+            // Jednoduchá logika: 0 nebo 6 je víkend.
+            // (Pro přesnost by sem patřil i seznam českých svátků)
+            if (day === 0 || day === 6) return "weekend";
+            return "workday";
+        }
+
+        function getDayNameCZ() {
+            const days = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
+            return days[new Date().getDay()];
+        }
+
+        function updateWidget() {
+            const now = new Date();
+            const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
+            const currentDayType = getDayType();
+
+            // 1. Filtrování vlaků pro dnešní den
+            const todaysTrains = scheduleData.filter(train => {
+                if (train.days === "daily") return true;
+                return train.days === currentDayType;
+            });
+
+            // 2. Seřazení podle času
+            todaysTrains.sort((a, b) => {
+                const [h1, m1] = a.time.split(":").map(Number);
+                const [h2, m2] = b.time.split(":").map(Number);
+                return (h1 * 60 + m1) - (h2 * 60 + m2);
+            });
+
+            // 3. Nalezení budoucích vlaků
+            const upcomingTrains = todaysTrains.filter(train => {
+                const [h, m] = train.time.split(":").map(Number);
+                const trainTotalMinutes = h * 60 + m;
+                return trainTotalMinutes > currentTotalMinutes;
+            });
+
+            // --- UI UPDATE ---
+            
+            // Nastavení odznaku dne
+            document.getElementById("day-badge").textContent = getDayNameCZ();
+
+            const activeView = document.getElementById("active-view");
+            const emptyView = document.getElementById("empty-view");
+
+            if (upcomingTrains.length === 0) {
+                // Žádné další vlaky
+                activeView.style.display = "none";
+                emptyView.style.display = "block";
+                return;
+            }
+
+            // Máme vlaky
+            activeView.style.display = "block";
+            emptyView.style.display = "none";
+
+            const nextTrain = upcomingTrains[0];
+            
+            // Výpočet odpočtu
+            const [nextH, nextM] = nextTrain.time.split(":").map(Number);
+            const nextDate = new Date();
+            nextDate.setHours(nextH, nextM, 0);
+            
+            const diffMs = nextDate - now;
+            const diffMins = Math.floor(diffMs / 60000); // Celé minuty
+            const diffSecs = Math.floor((diffMs % 60000) / 1000); // Sekundy pro případné zjemnění
+
+            // Formátování odpočtu
+            const countdownEl = document.getElementById("countdown");
+            const statusEl = document.getElementById("status-text");
+            
+            if (diffMins >= 60) {
+                const h = Math.floor(diffMins / 60);
+                const m = diffMins % 60;
+                countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
+                statusEl.textContent = "hodin do odjezdu";
+                countdownEl.style.fontSize = "60px"; // Zmenšit font pro delší text
+            } else {
+                countdownEl.textContent = diffMins;
+                statusEl.textContent = "minut do odjezdu";
+                countdownEl.style.fontSize = "80px";
+            }
+            
+            // Barvení odpočtu když je málo času (< 5 min)
+            if (diffMins < 5) {
+                countdownEl.style.color = "var(--alert-red)";
+            } else {
+                countdownEl.style.color = "var(--poster-black)";
+            }
+
+            // Vyplnění informací
+            document.getElementById("next-dir").textContent = nextTrain.dir;
+            document.getElementById("next-time").textContent = nextTrain.time;
+
+            // Vyplnění seznamu dalších spojů (max 3)
+            const upcomingContainer = document.getElementById("upcoming-container");
+            upcomingContainer.innerHTML = "";
+            
+            const nextFew = upcomingTrains.slice(1, 4);
+            if (nextFew.length === 0) {
+                upcomingContainer.innerHTML = "<div style='color:#999; font-size:13px; font-style:italic;'>Žádné další spoje</div>";
+            } else {
+                nextFew.forEach(train => {
+                    const row = document.createElement("div");
+                    row.className = "next-item";
+                    row.innerHTML = `<span>${train.dir}</span> <span>${train.time}</span>`;
+                    upcomingContainer.appendChild(row);
+                });
+            }
+        }
+
+        // Spustit hned a pak každou sekundu
+        updateWidget();
+        setInterval(updateWidget, 1000);
+
+    </script>
+</body>
+</html>
