@@ -230,55 +230,57 @@
         </div>
 
         <div class="footer">
-            Data z plakátu • Aktualizace automatická
+            Data z jízdního řádu • Aktualizace automatická
         </div>
     </div>
 
     <script>
-        // --- KONFIGURACE DAT ---
-        // PŘESNÝ ROZVRH Z PLAKÁTU "PRŮJEZDY VLAKŮ POD MOSTEM"
-        // * = jen pracovní dny (workday)
-        // † = jen o víkendech a svátcích (weekend)
-        // ‡ = jen v pracovní dny a v říjnu (pro zjednodušení je chápáno jako workday)
-        // Bez symbolu = Denně (daily)
-
+        // --- KONFIGURACE DAT Z CSV SOUBORU ---
+        // Sloupce 1-5 = Pracovní dny (workday)
+        // Sloupce 6-7 a Svátek = Víkend/Svátek (weekend)
+        
         const scheduleData = [
+            // Noční spoje (zahrnuty jen pracovní dny, jako v CSV)
             { time: "00:49", dir: "Dejvice", days: "workday" },
-            { time: "04:49", dir: "Dejvice", days: "workday" },
+
+            // Ranní spoje
+            { time: "04:49", dir: "Výstav.", days: "workday" },
             { time: "04:59", dir: "Výstav.", days: "weekend" },
             { time: "05:21", dir: "Dejvice", days: "workday" },
-            { time: "05:24", dir: "Výstav.", days: "workday" },
+            { time: "05:24", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
             { time: "05:30", dir: "Výstav.", days: "workday" },
-            { time: "05:33", dir: "Dejvice", days: "workday" },
+            { time: "05:33", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
             { time: "05:58", dir: "Výstav.", days: "workday" },
             { time: "06:02", dir: "Dejvice", days: "workday" },
             { time: "06:13", dir: "Výstav.", days: "workday" },
-            { time: "06:16", dir: "Dejvice", days: "workday" },
-            { time: "06:25", dir: "Výstav.", days: "workday" },
-            { time: "06:37", dir: "Výstav.", days: "workday" }, // Zjednodušeno z ‡
+            { time: "06:16", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "06:25", dir: "Výstav.", days: "daily" }, // Jede denně (x ve všech dnech)
+            { time: "06:37", dir: "Výstav.", days: "workday" },
             { time: "06:40", dir: "Dejvice", days: "workday" },
             { time: "06:42", dir: "Dejvice", days: "workday" },
             { time: "07:00", dir: "Výstav.", days: "workday" },
-            { time: "07:07", dir: "Dejvice", days: "workday" }, // Zjednodušeno z ‡
+            { time: "07:07", dir: "Dejvice", days: "workday" },
             { time: "07:13", dir: "Výstav.", days: "workday" },
             { time: "07:28", dir: "Dejvice", days: "workday" },
-            { time: "07:36", dir: "Dejvice", days: "daily" },
+            { time: "07:36", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "07:47", dir: "Výstav.", days: "workday" },
             { time: "08:08", dir: "Dejvice", days: "workday" },
             { time: "08:13", dir: "Výstav.", days: "workday" },
-            { time: "08:17", dir: "Výstav.", days: "weekend" },
+            { time: "08:17", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
             { time: "08:29", dir: "Výstav.", days: "workday" },
-            { time: "08:36", dir: "Dejvice", days: "daily" },
-            { time: "08:47", dir: "Výstav.", days: "weekend" },
-            { time: "09:07", dir: "Dejvice", days: "weekend" },
-            { time: "09:13", dir: "Výstav.", days: "daily" },
-            { time: "09:36", dir: "Dejvice", days: "daily" },
-            { time: "09:47", dir: "Výstav.", days: "weekend" },
-            { time: "10:07", dir: "Dejvice", days: "weekend" },
-            { time: "10:13", dir: "Výstav.", days: "daily" },
-            { time: "10:36", dir: "Dejvice", days: "daily" },
-            { time: "10:47", dir: "Výstav.", days: "weekend" },
-            { time: "11:07", dir: "Dejvice", days: "weekend" },
+            { time: "08:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "08:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "09:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "09:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "09:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "09:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "10:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "10:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "10:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "10:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+
+            // Polední a odpolední spoje
+            { time: "11:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
             { time: "11:13", dir: "Výstav.", days: "workday" },
             { time: "11:36", dir: "Dejvice", days: "workday" },
             { time: "11:47", dir: "Výstav.", days: "workday" },
@@ -291,128 +293,132 @@
             { time: "13:36", dir: "Dejvice", days: "workday" },
             { time: "13:47", dir: "Výstav.", days: "workday" },
             { time: "14:07", dir: "Dejvice", days: "workday" },
-            { time: "14:13", dir: "Výstav.", days: "daily" },
-            { time: "14:36", dir: "Dejvice", days: "daily" },
+            { time: "14:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "14:36", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "14:47", dir: "Výstav.", days: "workday" },
             { time: "15:07", dir: "Dejvice", days: "workday" },
-            { time: "15:13", dir: "Výstav.", days: "daily" },
-            { time: "15:23", dir: "Dejvice", days: "weekend" },
+            { time: "15:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "15:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
             { time: "15:36", dir: "Dejvice", days: "workday" },
             { time: "15:47", dir: "Výstav.", days: "workday" },
             { time: "16:07", dir: "Dejvice", days: "workday" },
-            { time: "16:13", dir: "Výstav.", days: "daily" },
-            { time: "16:23", dir: "Dejvice", days: "weekend" },
-            { time: "16:36", dir: "Dejvice", days: "daily" },
+            { time: "16:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "16:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "16:36", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "16:47", dir: "Výstav.", days: "workday" },
             { time: "17:07", dir: "Dejvice", days: "workday" },
-            { time: "17:13", dir: "Výstav.", days: "daily" },
-            { time: "17:23", dir: "Dejvice", days: "weekend" },
-            { time: "17:36", dir: "Dejvice", days: "daily" },
+            { time: "17:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "17:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "17:36", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "17:47", dir: "Výstav.", days: "workday" },
             { time: "18:07", dir: "Dejvice", days: "workday" },
-            { time: "18:13", dir: "Výstav.", days: "daily" },
-            { time: "18:23", dir: "Dejvice", days: "weekend" },
-            { time: "18:29", dir: "Výstav.", days: "weekend" },
-            { time: "18:36", dir: "Dejvice", days: "daily" },
-            { time: "18:47", dir: "Výstav.", days: "daily" },
-            { time: "19:07", dir: "Dejvice", days: "weekend" },
-            { time: "19:13", dir: "Výstav.", days: "daily" },
-            { time: "19:36", dir: "Dejvice", days: "daily" },
-            { time: "19:47", dir: "Výstav.", days: "weekend" },
-            { time: "20:07", dir: "Dejvice", days: "daily" },
-            { time: "20:13", dir: "Výstav.", days: "daily" },
+            { time: "18:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "18:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "18:29", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "18:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "18:47", dir: "Výstav.", days: "daily" }, // Jede denně
+            
+            // Večerní spoje
+            { time: "19:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "19:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "19:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "19:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "20:07", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "20:13", dir: "Výstav.", days: "daily" }, // Jede denně
             { time: "20:36", dir: "Dejvice", days: "workday" },
-            { time: "20:46", dir: "Výstav.", days: "weekend" },
-            { time: "21:07", dir: "Dejvice", days: "weekend" },
-            { time: "21:13", dir: "Výstav.", days: "weekend" },
-            { time: "21:36", dir: "Dejvice", days: "daily" },
+            { time: "20:46", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "21:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "21:13", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+            { time: "21:36", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "21:47", dir: "Výstav.", days: "workday" },
             { time: "22:07", dir: "Dejvice", days: "workday" },
-            { time: "22:13", dir: "Výstav.", days: "daily" },
-            { time: "22:36", dir: "Dejvice", days: "daily" },
-            { time: "23:17", dir: "Výstav.", days: "daily" },
-            { time: "23:46", dir: "Dejvice", days: "daily" },
+            { time: "22:13", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "22:36", dir: "Dejvice", days: "daily" }, // Jede denně
+            { time: "23:17", dir: "Výstav.", days: "daily" }, // Jede denně
+            { time: "23:46", dir: "Dejvice", days: "daily" }, // Jede denně
             { time: "23:54", dir: "Výstav.", days: "workday" }
         ];
 
         // --- LOGIKA APLIKACE ---
 
+        /**
+         * Zjistí typ dne (pracovní den/víkend).
+         * @returns {string} "workday" nebo "weekend".
+         */
         function getDayType() {
             const now = new Date();
             const day = now.getDay(); // 0 = Sunday, 6 = Saturday
-            // 1 = Monday, 5 = Friday
             
-            // Standardní logika: 0 (Neděle) nebo 6 (Sobota) je víkend.
-            // Dny 1 až 5 (Po-Pá) jsou pracovní dny.
+            // Dny 0 (Neděle) a 6 (Sobota) se považují za víkend/svátek.
             if (day === 0 || day === 6) return "weekend";
-            return "workday";
+            return "workday"; // Dny 1-5 (Po-Pá) jsou pracovní dny.
         }
 
+        /**
+         * Vrátí název aktuálního dne v češtině.
+         * @returns {string} Název dne.
+         */
         function getDayNameCZ() {
             const days = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
             return days[new Date().getDay()];
         }
 
+        /**
+         * Převede čas HH:MM na celkové minuty od půlnoci.
+         * @param {string} time - Čas ve formátu "HH:MM".
+         * @returns {number} Celkové minuty.
+         */
+        function timeToMinutes(time) {
+             const [h, m] = time.split(":").map(Number);
+             return h * 60 + m;
+        }
+
+
         function updateWidget() {
             const now = new Date();
-            // Total minutes from midnight, handling the 24-hour cycle correctly for 00:xx
             const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
             const currentDayType = getDayType();
+            
+            // 1. Nastavení odznaku dne
+            document.getElementById("day-badge").textContent = getDayNameCZ();
 
-            // 1. Filtrování vlaků pro dnešní den
+            // 2. Filtrování vlaků pro dnešní den
+            // Zahrnuje vlaky pro "daily" a vlaky odpovídající aktuálnímu typu dne ("workday" nebo "weekend").
             const todaysTrains = scheduleData.filter(train => {
                 if (train.days === "daily") return true;
                 return train.days === currentDayType;
             });
+            
+            // 3. Seřazení spojů (důležité pro správné nalezení "next train")
+            todaysTrains.sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
 
-            // 2. Seřazení podle času (již by mělo být seřazené, ale pro jistotu)
-            todaysTrains.sort((a, b) => {
-                const [h1, m1] = a.time.split(":").map(Number);
-                const [h2, m2] = b.time.split(":").map(Number);
-                return (h1 * 60 + m1) - (h2 * 60 + m2);
-            });
-
-            // 3. Nalezení budoucích vlaků
+            // 4. Nalezení budoucích vlaků (vlaky, které ještě neprojely)
+            // Uvažuje se denní cyklus od 0:00 do 23:59.
             let upcomingTrains = todaysTrains.filter(train => {
-                const [h, m] = train.time.split(":").map(Number);
-                const trainTotalMinutes = h * 60 + m;
-                // Vlaky 00:xx by měly jet, pokud je ještě před 00:xx časem (což je vždy true)
-                // Uvažujeme, že 00:xx je stále 'dnešní' den, pokud aktuální čas není 00:xx včerejšího dne.
-                // Proto stačí porovnání celkových minut.
+                const trainTotalMinutes = timeToMinutes(train.time);
                 return trainTotalMinutes > currentTotalMinutes;
             });
+
+            // --- ZVLÁŠTNÍ LOGIKA PRO NOČNÍ A PRÁZDNÝ STAV ---
             
-            // Logika pro vlaky po půlnoci (00:xx)
-            // Pokud je aktuální čas např. 23:50, vlaky v 00:10 už nepojedou "dnes", ale až zítra.
-            // Nicméně, pokud je aktuální čas např. 00:05, vlak v 00:49 POJEDE.
-            // Proto kód hledá vlaky, které ještě neprojely.
-
-            // Pokud je list upcomingTrains prázdný, znamená to, že všechny vlaky pro dnešek (včetně těch po půlnoci) už odjely.
-            // V takovém případě vezmeme první vlak z celého rozvrhu (který pojede zítra).
-            // Zobrazíme stav "Hotovo" pouze v případě, že je aktuální čas po 4:00 ranní, abychom zohlednili noční spoje.
-            if (upcomingTrains.length === 0 && currentTotalMinutes >= 4 * 60) {
-                // Skutečně už po odjezdu posledního vlaku a po 4:00 ráno
-                document.getElementById("active-view").style.display = "none";
-                document.getElementById("empty-view").style.display = "block";
-                return;
-            } else if (upcomingTrains.length === 0 && currentTotalMinutes < 4 * 60) {
-                 // Pokud je mezi 00:00 a 04:00 a všechny vlaky 00:xx už projely, 
-                 // zobrazíme i tak stav "Hotovo", protože vlaky začínají až cca v 4:49.
-                 document.getElementById("active-view").style.display = "none";
-                 document.getElementById("empty-view").style.display = "block";
-                 return;
-            }
-
-
-            // --- UI UPDATE ---
-            
-            // Nastavení odznaku dne
-            document.getElementById("day-badge").textContent = getDayNameCZ();
-
             const activeView = document.getElementById("active-view");
             const emptyView = document.getElementById("empty-view");
 
-            // Máme vlaky
+            // Noční vlaky (Po půlnoci, před prvním ranním vlakem, např. 0:00 - 4:00)
+            // Pokud je v seznamu budoucích vlaků noční spoj (např. 0:49), zobrazí se.
+            
+            // Kontrola, zda již neprojely VŠECHNY vlaky pro dnešek
+            if (upcomingTrains.length === 0) {
+                 // Pokud je seznam prázdný, znamená to, že všechny vlaky už dnes odjely.
+                 // Nastavíme zobrazení "Hotovo".
+                activeView.style.display = "none";
+                emptyView.style.display = "block";
+                return;
+            }
+
+
+            // --- UI UPDATE: Máme vlak, který pojede ---
+            
             activeView.style.display = "block";
             emptyView.style.display = "none";
 
@@ -421,16 +427,12 @@
             // Výpočet odpočtu
             const [nextH, nextM] = nextTrain.time.split(":").map(Number);
             let nextDate = new Date();
-            nextDate.setHours(nextH, nextM, 0);
+            nextDate.setHours(nextH, nextM, 0, 0);
 
-            // Pokud je aktuální čas např. 23:50 a další vlak je 00:10, 
-            // musíme k datu přičíst jeden den, aby se odpočet počítal správně.
-            // Kontrola: Pokud čas vlaku je menší než aktuální čas, ale vlak je v seznamu "upcomingTrains" 
-            // (což by neměl být, pokud je správně filtrováno), ale pro jistotu (pro 00:xx hodiny)
-            if (nextDate < now) {
-                // Přidáme jeden den, aby se odpočet počítal do zítřka (to se stane pouze pro 00:xx spoje, pokud se spouští blízko půlnoci)
-                nextDate.setDate(nextDate.getDate() + 1);
-            }
+            // Pokud je aktuální čas např. 23:50 a nejbližší vlak je 0:49, 
+            // Vlak 0:49 sice má menší čas HH:MM, ale je to už zítra, proto se do něj nepočítá
+            // jelikož filtrace upcomingTrains je postavena na aktuálních minutách.
+            // Nicméně, pokud je aktuální čas např. 00:30, a vlak je 00:49, počítá se do dneška.
             
             const diffMs = nextDate - now;
             const diffMins = Math.floor(diffMs / 60000); // Celé minuty
@@ -458,7 +460,7 @@
                 countdownEl.style.color = "var(--poster-black)";
             }
 
-            // Vyplnění informací
+            // Vyplnění informací o příštím vlaku
             document.getElementById("next-dir").textContent = nextTrain.dir;
             document.getElementById("next-time").textContent = nextTrain.time;
 
@@ -469,7 +471,7 @@
             // Zobrazíme další 3 spoje po tom, co jsme našli
             const nextFew = upcomingTrains.slice(1, 4); 
             if (nextFew.length === 0) {
-                upcomingContainer.innerHTML = "<div style='color:#999; font-size:13px; font-style:italic;'>Žádné další spoje</div>";
+                upcomingContainer.innerHTML = "<div style='color:#999; font-size:13px; font-style:italic;'>Žádné další spoje v rozvrhu.</div>";
             } else {
                 nextFew.forEach(train => {
                     const row = document.createElement("div");
