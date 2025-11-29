@@ -2,493 +2,343 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jízdní řád Widget</title>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Odjezdy Vlaků</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        :root {
-            --poster-yellow: #FFD600; /* Vivid poster yellow */
-            --poster-black: #1a1a1a;
-            --paper-white: #ffffff;
-            --alert-red: #D32F2F;
-            --font-main: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-        }
-
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
         body {
-            font-family: var(--font-main);
-            background-color: #f0f2f5;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            margin: 0;
-            padding: 20px;
-            box-sizing: border-box;
-        }
-
-        /* The main "Card" mimicking a widget */
-        .widget-card {
-            background-color: var(--poster-yellow);
-            width: 100%;
-            max-width: 380px;
-            border-radius: 24px;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.15), 0 0 0 1px rgba(0,0,0,0.05);
-            overflow: hidden;
-            position: relative;
-            color: var(--poster-black);
-            border: 4px solid var(--poster-black);
-        }
-
-        /* Header Section */
-        .widget-header {
-            padding: 20px 24px 10px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-start;
-        }
-
-        .location-title {
-            font-size: 14px;
-            text-transform: uppercase;
-            font-weight: 700;
-            letter-spacing: 1px;
-            opacity: 0.8;
-            margin: 0;
-        }
-
-        .day-indicator {
-            font-size: 12px;
-            font-weight: 700;
-            background: var(--poster-black);
-            color: var(--poster-yellow);
-            padding: 4px 8px;
-            border-radius: 6px;
-            text-transform: uppercase;
-        }
-
-        /* Main Countdown Section */
-        .countdown-section {
-            text-align: center;
-            padding: 10px 0 30px;
-        }
-
-        .countdown-time {
-            font-size: 72px;
-            font-weight: 800;
-            line-height: 1;
-            font-variant-numeric: tabular-nums;
-            letter-spacing: -2px;
-        }
-
-        .countdown-label {
-            font-size: 16px;
-            font-weight: 600;
-            opacity: 0.9;
-            margin-top: 5px;
-        }
-
-        /* Train Info Box */
-        .info-box {
-            background: var(--paper-white);
-            margin: 0 16px 16px;
-            border-radius: 16px;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-            border: 2px solid var(--poster-black);
-        }
-
-        .primary-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 2px dashed #eee;
-            padding-bottom: 15px;
-        }
-
-        .train-destination {
-            font-size: 24px;
-            font-weight: 800;
-        }
-
-        .train-departure-time {
-            font-size: 24px;
-            font-weight: 800;
-            color: var(--poster-black);
-            background: #eee;
-            padding: 4px 10px;
-            border-radius: 8px;
-        }
-
-        /* Next Trains List */
-        .next-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
-        .list-label {
-            font-size: 11px;
-            text-transform: uppercase;
-            color: #666;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .next-item {
-            display: flex;
-            justify-content: space-between;
-            font-size: 15px;
-            font-weight: 500;
-            color: #444;
-            padding: 4px 0;
-        }
-        
-        .next-item span:last-child {
-            font-weight: 700;
-            color: var(--poster-black);
-        }
-
-        /* Error/Empty State */
-        .empty-state {
-            display: none;
-            text-align: center;
-            padding: 40px 20px;
-        }
-        
-        .empty-state-icon {
-            font-size: 40px;
-            margin-bottom: 10px;
-            display: block;
-        }
-
-        /* Footer */
-        .footer {
-            text-align: center;
-            padding: 12px;
-            font-size: 11px;
-            opacity: 0.6;
-            font-weight: 600;
-        }
-        /* Mobile adjustments for slightly better layout */
-        @media (max-width: 400px) {
-            .countdown-time {
-                font-size: 60px;
-            }
-            .widget-header {
-                padding: 15px 20px 5px;
-            }
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f7f7;
+            color: #1f2937;
         }
     </style>
 </head>
-<body>
+<body class="p-4 md:p-8">
 
-    <div class="widget-card">
-        <div class="widget-header">
-            <h1 class="location-title">Odjezdy Vlaků</h1>
-            <div id="day-badge" class="day-indicator">Dnes</div>
+    <div id="app" class="max-w-4xl mx-auto bg-white p-6 md:p-10 rounded-xl shadow-2xl">
+        <h1 class="text-3xl font-bold mb-6 text-gray-800 border-b-2 pb-2 border-indigo-200">
+            Aktuální odjezdy vlaků
+        </h1>
+
+        <!-- Vstup pro simulaci času/data -->
+        <div class="mb-6 p-4 border rounded-lg bg-indigo-50">
+            <h2 class="text-xl font-semibold mb-3 text-indigo-700">Nastavení simulace času</h2>
+            <div class="flex flex-col sm:flex-row gap-4">
+                <div class="flex-grow">
+                    <label for="date-input" class="block text-sm font-medium text-gray-700">Datum:</label>
+                    <input type="date" id="date-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" />
+                </div>
+                <div class="flex-grow">
+                    <label for="time-input" class="block text-sm font-medium text-gray-700">Čas (HH:MM):</label>
+                    <input type="time" id="time-input" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 p-2" />
+                </div>
+            </div>
+            <button id="apply-time-btn" class="mt-4 w-full sm:w-auto bg-indigo-600 hover:bg-indigo-700 text-white font-semibold py-2 px-4 rounded-lg shadow-md transition duration-150">
+                Použít simulovaný čas
+            </button>
+            <p id="current-info" class="mt-3 text-sm text-gray-600">Aktuální datum/čas: Načítám...</p>
         </div>
 
-        <!-- Main Display -->
-        <div id="active-view">
-            <div class="countdown-section">
-                <div id="countdown" class="countdown-time">--</div>
-                <div id="status-text" class="countdown-label">minut do odjezdu</div>
+        <div id="schedule-container" class="mt-8">
+            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+                <strong class="font-bold">Chyba!</strong>
+                <span id="error-text" class="block sm:inline">Při zpracování dat došlo k chybě.</span>
             </div>
-
-            <div class="info-box">
-                <!-- Big Next Train -->
-                <div class="primary-info">
-                    <div>
-                        <div style="font-size: 12px; color:#666; margin-bottom:4px;">SMĚR</div>
-                        <div id="next-dir" class="train-destination">--</div>
-                    </div>
-                    <div>
-                        <div style="font-size: 12px; color:#666; margin-bottom:4px; text-align:right;">ODJEZD</div>
-                        <div id="next-time" class="train-departure-time">--:--</div>
-                    </div>
-                </div>
-
-                <!-- Upcoming list -->
-                <div class="next-list">
-                    <div class="list-label">Následující spoje</div>
-                    <div id="upcoming-container">
-                        <!-- JS fills this -->
-                    </div>
-                </div>
+            <div id="schedule-output">
+                <!-- Zde se vykreslí tabulka -->
             </div>
         </div>
 
-        <!-- Empty State (No more trains) -->
-        <div id="empty-view" class="empty-state">
-            <span class="empty-state-icon">😴</span>
-            <strong>Pro dnešek hotovo</strong>
-            <p style="font-size: 14px; opacity: 0.8; margin-top:5px;">Další vlak jede až zítra ráno.</p>
-        </div>
-
-        <div class="footer">
-            Data z jízdního řádu • Aktualizace automatická
-        </div>
+        <h2 class="text-2xl font-bold mt-10 mb-4 text-gray-800">Vysvětlení symbolů</h2>
+        <ul class="list-disc list-inside text-gray-600 space-y-1">
+            <li>Dny 1-5: Pondělí až Pátek (Pracovní dny)</li>
+            <li>Den 6: Sobota</li>
+            <li>Den 7: Neděle</li>
+            <li>Svátek: Státní svátek</li>
+            <li>`x`: Vlak jede v daný den</li>
+            <li>Prázdná buňka: Vlak v daný den nejede</li>
+        </ul>
     </div>
 
-    <script>
-        // --- KONFIGURACE DAT Z CSV SOUBORU ---
-        // Sloupce 1-5 = Pracovní dny (workday)
-        // Sloupce 6-7 a Svátek = Víkend/Svátek (weekend)
-        
-        const scheduleData = [
-            // Noční spoje (zahrnuty jen pracovní dny, jako v CSV)
-            { time: "00:49", dir: "Dejvice", days: "workday" },
+    <!-- CSV Data - Upraveno dle požadavků -->
+    <script id="csv-data" type="text/csv">
+Čas,Směr,Vlak,1,2,3,4,5,6,7,Svátek
+0.49,Dejvice,9848,x,x,x,x,x,x,x,x
+4.49,Výstav.,9851,x,x,x,x,x,x,x,x
+4.59,Výstav.,19731,x,x,x,x,x,x,x,x
+5.21,Dejvice,9800,x,x,x,x,x
+5.24,Výstav.,9853,,,,,,x,x,x
+5.3,Výstav.,9855,x,x,x,x,x
+5.33,Dejvice,9802,,,,,,x,x,x
+5.58,Výstav.,9811,x,x,x,x,x
+6.02,Dejvice,19732,x,x,x,x,x
+6.13,Výstav.,Sp 1561,x,x,x,x,x
+6.16,Dejvice,19734,,,,,,x,x,x
+6.25,Výstav.,9801,x,x,x,x,x,x,x,x
+6.37,Výstav.,R1231,x,x,x,x,x,x
+6.4,Dejvice,9810,x,x,x,x,x
+6.58,Výstav.,9803,x,x,x,x,x,x,x,x
+7.0,Dejvice,19738,,,,,,x,x,x
+7.13,Výstav.,9857,x,x,x,x,x
+7.21,Dejvice,Sp 1560,x,x,x,x,x
+7.24,Výstav.,R1233,x,x,x,x,x
+7.37,Výstav.,9805,x,x,x,x,x,x,x,x
+7.4,Dejvice,9804,x,x,x,x,x
+7.58,Výstav.,9813,x,x,x,x,x
+8.0,Dejvice,19740,x,x,x,x,x
+8.13,Výstav.,Sp 1563,x,x,x,x,x
+8.21,Dejvice,9806,x,x,x,x,x,x,x,x
+8.24,Výstav.,R1235,x,x,x,x,x,x
+8.37,Výstav.,9807,x,x,x,x,x,x,x,x
+8.4,Dejvice,9812,x,x,x,x,x
+9.0,Dejvice,19742,x,x,x,x,x
+9.13,Výstav.,9859,x,x,x,x,x
+9.21,Dejvice,Sp 1562,x,x,x,x,x
+9.24,Výstav.,9809,x,x,x,x,x,x,x,x
+9.37,Výstav.,9815,x,x,x,x,x
+9.4,Dejvice,9808,x,x,x,x,x,x,x,x
+9.58,Výstav.,9817,x,x,x,x,x,x,x,x
+10.0,Dejvice,19744,x,x,x,x,x,x,x,x
+10.13,Výstav.,9861,x,x,x,x,x,x,x,x
+10.21,Dejvice,Sp 1564,x,x,x,x,x,x,x,x
+10.24,Výstav.,9819,x,x,x,x,x,x,x,x
+10.37,Výstav.,9821,x,x,x,x,x,x,x,x
+10.4,Dejvice,9814,x,x,x,x,x,x,x,x
+10.58,Výstav.,9823,x,x,x,x,x,x,x,x
+11.0,Dejvice,19746,x,x,x,x,x,x,x,x
+11.13,Výstav.,9863,x,x,x,x,x,x,x,x
+11.21,Dejvice,Sp 1566,x,x,x,x,x,x,x,x
+11.24,Výstav.,9825,x,x,x,x,x,x,x,x
+11.37,Výstav.,9827,x,x,x,x,x,x,x,x
+11.4,Dejvice,9816,x,x,x,x,x,x,x,x
+11.58,Výstav.,9829,x,x,x,x,x,x,x,x
+12.0,Dejvice,19748,x,x,x,x,x,x,x,x
+12.13,Výstav.,9865,x,x,x,x,x,x,x,x
+12.21,Dejvice,Sp 1568,x,x,x,x,x,x,x,x
+12.24,Výstav.,R1237,x,x,x,x,x,x,x,x
+12.37,Výstav.,9831,x,x,x,x,x,x,x,x
+12.4,Dejvice,9818,x,x,x,x,x,x,x,x
+12.58,Výstav.,9833,x,x,x,x,x,x,x,x
+13.0,Dejvice,19750,x,x,x,x,x,x,x,x
+13.13,Výstav.,9867,x,x,x,x,x,x,x,x
+13.21,Dejvice,Sp 1570,x,x,x,x,x,x,x,x
+13.24,Výstav.,9835,x,x,x,x,x,x,x,x
+13.37,Výstav.,R1233,x,x,x,x,x,x
+13.4,Dejvice,9820,x,x,x,x,x,x,x,x
+13.58,Výstav.,9837,x,x,x,x,x,x,x,x
+14.0,Dejvice,19752,x,x,x,x,x,x,x,x
+14.13,Výstav.,9869,x,x,x,x,x,x,x,x
+14.21,Dejvice,Sp 1572,x,x,x,x,x
+14.24,Výstav.,9839,x,x,x,x,x,x,x,x
+14.37,Výstav.,9841,x,x,x,x,x,x,x,x
+14.4,Dejvice,9822,x,x,x,x,x,x,x,x
+14.58,Výstav.,9843,x,x,x,x,x,x,x,x
+15.0,Dejvice,19754,x,x,x,x,x,x,x,x
+15.13,Výstav.,9871,x,x,x,x,x,x,x,x
+15.21,Dejvice,Sp 1574,x,x,x,x,x
+15.24,Výstav.,9845,x,x,x,x,x,x,x,x
+15.37,Výstav.,R1235,x,x,x,x,x,x
+15.4,Dejvice,9824,x,x,x,x,x,x,x,x
+15.58,Výstav.,9847,x,x,x,x,x,x,x,x
+16.0,Dejvice,19756,x,x,x,x,x,x,x,x
+16.13,Výstav.,9873,x,x,x,x,x,x,x,x
+16.21,Dejvice,Sp 1576,x,x,x,x,x
+16.24,Výstav.,9849,x,x,x,x,x,x,x,x
+16.37,Výstav.,9851,x,x,x,x,x,x,x,x
+16.4,Dejvice,9826,x,x,x,x,x,x,x,x
+16.58,Výstav.,9853,x,x,x,x,x,x,x,x
+17.0,Dejvice,19758,x,x,x,x,x,x,x,x
+17.13,Výstav.,9875,x,x,x,x,x,x,x,x
+17.21,Dejvice,Sp 1578,x,x,x,x,x
+17.24,Výstav.,9855,x,x,x,x,x,x,x,x
+17.37,Výstav.,R1237,x,x,x,x,x,x,x,x
+17.4,Dejvice,9828,x,x,x,x,x,x,x,x
+17.58,Výstav.,9857,x,x,x,x,x,x,x,x
+18.0,Dejvice,19760,x,x,x,x,x,x,x,x
+18.13,Výstav.,9877,x,x,x,x,x,x,x,x
+18.21,Dejvice,Sp 1580,x,x,x,x,x
+18.24,Výstav.,9859,x,x,x,x,x,x,x,x
+18.29,Výstav.,9837,x,x,x,x,x,x,x,x
+18.4,Dejvice,9830,x,x,x,x,x,x,x,x
+18.58,Výstav.,9861,x,x,x,x,x,x,x,x
+19.0,Dejvice,19762,x,x,x,x,x,x,x,x
+19.13,Výstav.,9879,x,x,x,x,x,x,x,x
+19.21,Dejvice,Sp 1582,x,x,x,x,x
+19.24,Výstav.,9863,x,x,x,x,x,x,x,x
+19.37,Výstav.,9865,x,x,x,x,x,x,x,x
+19.4,Dejvice,9832,x,x,x,x,x,x,x,x
+19.58,Výstav.,9867,x,x,x,x,x,x,x,x
+20.0,Dejvice,19764,x,x,x,x,x,x,x,x
+20.13,Výstav.,9881,x,x,x,x,x,x,x,x
+20.21,Dejvice,Sp 1584,x,x,x,x,x
+20.24,Výstav.,9869,x,x,x,x,x,x,x,x
+20.37,Výstav.,9871,x,x,x,x,x,x,x,x
+20.4,Dejvice,9834,x,x,x,x,x,x,x,x
+20.46,Výstav.,9899,x,x,x,x,x,x,x,x
+20.58,Výstav.,9873,x,x,x,x,x,x,x,x
+21.0,Dejvice,19766,x,x,x,x,x,x,x,x
+21.13,Výstav.,9883,x,x,x,x,x,x,x,x
+21.21,Dejvice,Sp 1586,x,x,x,x,x
+21.24,Výstav.,9875,x,x,x,x,x,x,x,x
+21.37,Výstav.,9877,x,x,x,x,x,x,x,x
+21.4,Dejvice,9836,x,x,x,x,x,x,x,x
+21.58,Výstav.,9879,x,x,x,x,x,x,x,x
+22.0,Dejvice,19768,x,x,x,x,x,x,x,x
+22.13,Výstav.,9885,x,x,x,x,x,x,x,x
+22.21,Dejvice,Sp 1588,x,x,x,x,x
+22.24,Výstav.,9881,x,x,x,x,x,x,x,x
+22.37,Výstav.,9883,x,x,x,x,x,x,x,x
+22.4,Dejvice,9838,x,x,x,x,x,x,x,x
+22.58,Výstav.,9885,x,x,x,x,x,x,x,x
+23.0,Dejvice,19770,x,x,x,x,x,x,x,x
+23.13,Výstav.,9887,x,x,x,x,x,x,x,x
+23.21,Dejvice,Sp 1590,x,x,x,x,x
+23.24,Výstav.,9887,x,x,x,x,x,x,x,x
+23.37,Výstav.,9889,x,x,x,x,x,x,x,x
+23.4,Dejvice,9840,x,x,x,x,x,x,x,x
+23.58,Výstav.,9891,x,x,x,x,x,x,x,x
+    </script>
 
-            // Ranní spoje
-            { time: "04:49", dir: "Výstav.", days: "workday" },
-            { time: "04:59", dir: "Výstav.", days: "weekend" },
-            { time: "05:21", dir: "Dejvice", days: "workday" },
-            { time: "05:24", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "05:30", dir: "Výstav.", days: "workday" },
-            { time: "05:33", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "05:58", dir: "Výstav.", days: "workday" },
-            { time: "06:02", dir: "Dejvice", days: "workday" },
-            { time: "06:13", dir: "Výstav.", days: "workday" },
-            { time: "06:16", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "06:25", dir: "Výstav.", days: "daily" }, // Jede denně (x ve všech dnech)
-            { time: "06:37", dir: "Výstav.", days: "workday" },
-            { time: "06:40", dir: "Dejvice", days: "workday" },
-            { time: "06:42", dir: "Dejvice", days: "workday" },
-            { time: "07:00", dir: "Výstav.", days: "workday" },
-            { time: "07:07", dir: "Dejvice", days: "workday" },
-            { time: "07:13", dir: "Výstav.", days: "workday" },
-            { time: "07:28", dir: "Dejvice", days: "workday" },
-            { time: "07:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "07:47", dir: "Výstav.", days: "workday" },
-            { time: "08:08", dir: "Dejvice", days: "workday" },
-            { time: "08:13", dir: "Výstav.", days: "workday" },
-            { time: "08:17", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "08:29", dir: "Výstav.", days: "workday" },
-            { time: "08:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "08:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "09:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "09:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "09:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "09:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "10:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "10:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "10:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "10:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
+    <script type="module">
+        // Data o státních svátcích pro rok 2025
+        const STATE_HOLIDAYS_2025 = [
+            "2025-01-01", "2025-04-18", "2025-04-21", "2025-05-01", 
+            "2025-05-08", "2025-07-05", "2025-07-06", "2025-09-28", 
+            "2025-10-28", "2025-11-17", "2025-12-24", "2025-12-25", "2025-12-26"
+        ].map(d => new Date(d).toDateString());
 
-            // Polední a odpolední spoje
-            { time: "11:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "11:13", dir: "Výstav.", days: "workday" },
-            { time: "11:36", dir: "Dejvice", days: "workday" },
-            { time: "11:47", dir: "Výstav.", days: "workday" },
-            { time: "12:07", dir: "Dejvice", days: "workday" },
-            { time: "12:13", dir: "Výstav.", days: "workday" },
-            { time: "12:36", dir: "Dejvice", days: "workday" },
-            { time: "12:47", dir: "Výstav.", days: "workday" },
-            { time: "13:07", dir: "Dejvice", days: "workday" },
-            { time: "13:13", dir: "Výstav.", days: "workday" },
-            { time: "13:36", dir: "Dejvice", days: "workday" },
-            { time: "13:47", dir: "Výstav.", days: "workday" },
-            { time: "14:07", dir: "Dejvice", days: "workday" },
-            { time: "14:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "14:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "14:47", dir: "Výstav.", days: "workday" },
-            { time: "15:07", dir: "Dejvice", days: "workday" },
-            { time: "15:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "15:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "15:36", dir: "Dejvice", days: "workday" },
-            { time: "15:47", dir: "Výstav.", days: "workday" },
-            { time: "16:07", dir: "Dejvice", days: "workday" },
-            { time: "16:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "16:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "16:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "16:47", dir: "Výstav.", days: "workday" },
-            { time: "17:07", dir: "Dejvice", days: "workday" },
-            { time: "17:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "17:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "17:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "17:47", dir: "Výstav.", days: "workday" },
-            { time: "18:07", dir: "Dejvice", days: "workday" },
-            { time: "18:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "18:23", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "18:29", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "18:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "18:47", dir: "Výstav.", days: "daily" }, // Jede denně
-            
-            // Večerní spoje
-            { time: "19:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "19:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "19:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "19:47", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "20:07", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "20:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "20:36", dir: "Dejvice", days: "workday" },
-            { time: "20:46", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "21:07", dir: "Dejvice", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "21:13", dir: "Výstav.", days: "weekend" }, // Pouze 6, 7 a Svátek
-            { time: "21:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "21:47", dir: "Výstav.", days: "workday" },
-            { time: "22:07", dir: "Dejvice", days: "workday" },
-            { time: "22:13", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "22:36", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "23:17", dir: "Výstav.", days: "daily" }, // Jede denně
-            { time: "23:46", dir: "Dejvice", days: "daily" }, // Jede denně
-            { time: "23:54", dir: "Výstav.", days: "workday" }
-        ];
+        function parseCSV(csv) {
+            const lines = csv.trim().split('\n');
+            if (lines.length < 2) return [];
+            const [headerLine, ...dataLines] = lines;
+            const headers = headerLine.split(',').map(h => h.trim());
+            const headerMap = {
+                'Čas': 0, 'Směr': 1, 'Vlak': 2,
+                '1': 3, '2': 4, '3': 5, '4': 6, '5': 7,
+                '6': 8, '7': 9, 'Svátek': 10
+            };
 
-        // --- LOGIKA APLIKACE ---
-
-        /**
-         * Zjistí typ dne (pracovní den/víkend).
-         * @returns {string} "workday" nebo "weekend".
-         */
-        function getDayType() {
-            const now = new Date();
-            const day = now.getDay(); // 0 = Sunday, 6 = Saturday
-            
-            // Dny 0 (Neděle) a 6 (Sobota) se považují za víkend/svátek.
-            if (day === 0 || day === 6) return "weekend";
-            return "workday"; // Dny 1-5 (Po-Pá) jsou pracovní dny.
+            return dataLines.map(line => {
+                const values = line.split(',').map(v => v.trim());
+                if (values.length !== headers.length) return null;
+                return {
+                    time: values[headerMap['Čas']],
+                    direction: values[headerMap['Směr']],
+                    train: values[headerMap['Vlak']],
+                    days: {
+                        1: values[headerMap['1']], 2: values[headerMap['2']], 3: values[headerMap['3']],
+                        4: values[headerMap['4']], 5: values[headerMap['5']], 6: values[headerMap['6']],
+                        7: values[headerMap['7']],
+                        holiday: values[headerMap['Svátek']]
+                    }
+                };
+            }).filter(item => item !== null);
         }
 
-        /**
-         * Vrátí název aktuálního dne v češtině.
-         * @returns {string} Název dne.
-         */
-        function getDayNameCZ() {
-            const days = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
-            return days[new Date().getDay()];
+        function isHoliday(date) {
+            return STATE_HOLIDAYS_2025.includes(date.toDateString());
         }
 
-        /**
-         * Převede čas HH:MM na celkové minuty od půlnoci.
-         * @param {string} time - Čas ve formátu "HH:MM".
-         * @returns {number} Celkové minuty.
-         */
-        function timeToMinutes(time) {
-             const [h, m] = time.split(":").map(Number);
-             return h * 60 + m;
-        }
+        function renderSchedule(currentTime = new Date()) {
+            try {
+                const csvData = document.getElementById('csv-data').textContent;
+                const schedule = parseCSV(csvData);
+                const outputDiv = document.getElementById('schedule-output');
+                const errorDiv = document.getElementById('error-message');
+                errorDiv.classList.add('hidden');
 
+                const nowInMinutes = currentTime.getHours() * 60 + currentTime.getMinutes();
+                let dayOfWeek = currentTime.getDay(); 
+                const dayIndex = dayOfWeek === 0 ? 7 : dayOfWeek; 
+                const isTodayHoliday = isHoliday(currentTime);
 
-        function updateWidget() {
-            const now = new Date();
-            const currentTotalMinutes = now.getHours() * 60 + now.getMinutes();
-            const currentDayType = getDayType();
-            
-            // 1. Nastavení odznaku dne
-            document.getElementById("day-badge").textContent = getDayNameCZ();
+                const filteredSchedule = schedule.filter(item => {
+                    const [hourStr, minuteStr] = item.time.split('.').map(s => parseInt(s));
+                    if (isNaN(hourStr) || isNaN(minuteStr)) return false;
+                    const departureInMinutes = hourStr * 60 + minuteStr;
 
-            // 2. Filtrování vlaků pro dnešní den
-            // Zahrnuje vlaky pro "daily" a vlaky odpovídající aktuálnímu typu dne ("workday" nebo "weekend").
-            const todaysTrains = scheduleData.filter(train => {
-                if (train.days === "daily") return true;
-                return train.days === currentDayType;
-            });
-            
-            // 3. Seřazení spojů (důležité pro správné nalezení "next train")
-            todaysTrains.sort((a, b) => timeToMinutes(a.time) - timeToMinutes(b.time));
+                    if (departureInMinutes < nowInMinutes) return false;
 
-            // 4. Nalezení budoucích vlaků (vlaky, které ještě neprojely)
-            // Uvažuje se denní cyklus od 0:00 do 23:59.
-            let upcomingTrains = todaysTrains.filter(train => {
-                const trainTotalMinutes = timeToMinutes(train.time);
-                return trainTotalMinutes > currentTotalMinutes;
-            });
+                    const holidayMarker = item.days.holiday;
+                    
+                    // ZMĚNA LOGIKY: Pokud je svátek, rozhoduje POUZE sloupec Svátek.
+                    if (isTodayHoliday) {
+                        return holidayMarker === 'x';
+                    }
 
-            // --- ZVLÁŠTNÍ LOGIKA PRO NOČNÍ A PRÁZDNÝ STAV ---
-            
-            const activeView = document.getElementById("active-view");
-            const emptyView = document.getElementById("empty-view");
-
-            // Noční vlaky (Po půlnoci, před prvním ranním vlakem, např. 0:00 - 4:00)
-            // Pokud je v seznamu budoucích vlaků noční spoj (např. 0:49), zobrazí se.
-            
-            // Kontrola, zda již neprojely VŠECHNY vlaky pro dnešek
-            if (upcomingTrains.length === 0) {
-                 // Pokud je seznam prázdný, znamená to, že všechny vlaky už dnes odjely.
-                 // Nastavíme zobrazení "Hotovo".
-                activeView.style.display = "none";
-                emptyView.style.display = "block";
-                return;
-            }
-
-
-            // --- UI UPDATE: Máme vlak, který pojede ---
-            
-            activeView.style.display = "block";
-            emptyView.style.display = "none";
-
-            const nextTrain = upcomingTrains[0];
-            
-            // Výpočet odpočtu
-            const [nextH, nextM] = nextTrain.time.split(":").map(Number);
-            let nextDate = new Date();
-            nextDate.setHours(nextH, nextM, 0, 0);
-
-            // Pokud je aktuální čas např. 23:50 a nejbližší vlak je 0:49, 
-            // Vlak 0:49 sice má menší čas HH:MM, ale je to už zítra, proto se do něj nepočítá
-            // jelikož filtrace upcomingTrains je postavena na aktuálních minutách.
-            // Nicméně, pokud je aktuální čas např. 00:30, a vlak je 00:49, počítá se do dneška.
-            
-            const diffMs = nextDate - now;
-            const diffMins = Math.floor(diffMs / 60000); // Celé minuty
-
-            // Formátování odpočtu
-            const countdownEl = document.getElementById("countdown");
-            const statusEl = document.getElementById("status-text");
-            
-            if (diffMins >= 60) {
-                const h = Math.floor(diffMins / 60);
-                const m = diffMins % 60;
-                countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
-                statusEl.textContent = "hodin do odjezdu";
-                countdownEl.style.fontSize = "60px"; // Zmenšit font pro delší text
-            } else {
-                countdownEl.textContent = diffMins;
-                statusEl.textContent = "minut do odjezdu";
-                countdownEl.style.fontSize = "80px";
-            }
-            
-            // Barvení odpočtu když je málo času (< 5 min)
-            if (diffMins < 5) {
-                countdownEl.style.color = "var(--alert-red)";
-            } else {
-                countdownEl.style.color = "var(--poster-black)";
-            }
-
-            // Vyplnění informací o příštím vlaku
-            document.getElementById("next-dir").textContent = nextTrain.dir;
-            document.getElementById("next-time").textContent = nextTrain.time;
-
-            // Vyplnění seznamu dalších spojů (max 3)
-            const upcomingContainer = document.getElementById("upcoming-container");
-            upcomingContainer.innerHTML = "";
-            
-            // Zobrazíme další 3 spoje po tom, co jsme našli
-            const nextFew = upcomingTrains.slice(1, 4); 
-            if (nextFew.length === 0) {
-                upcomingContainer.innerHTML = "<div style='color:#999; font-size:13px; font-style:italic;'>Žádné další spoje v rozvrhu.</div>";
-            } else {
-                nextFew.forEach(train => {
-                    const row = document.createElement("div");
-                    row.className = "next-item";
-                    row.innerHTML = `<span>${train.dir}</span> <span>${train.time}</span>`;
-                    upcomingContainer.appendChild(row);
+                    // Pokud není svátek, rozhoduje den v týdnu
+                    const dayMarker = item.days[dayIndex.toString()];
+                    return dayMarker === 'x';
                 });
+                
+                if (filteredSchedule.length === 0) {
+                    outputDiv.innerHTML = '<p class="text-lg text-gray-500 p-4 border rounded-lg bg-yellow-50">Pro dnešní datum a čas nejsou k dispozici žádné další odjezdy.</p>';
+                    return;
+                }
+
+                outputDiv.innerHTML = `
+                    <div class="overflow-x-auto shadow-lg rounded-xl">
+                        <table class="min-w-full divide-y divide-indigo-200">
+                            <thead class="bg-indigo-600 text-white">
+                                <tr>
+                                    <th class="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Čas</th>
+                                    <th class="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Směr</th>
+                                    <th class="px-6 py-3 text-left text-sm font-medium uppercase tracking-wider">Vlak</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                ${filteredSchedule.map(item => `
+                                    <tr class="hover:bg-indigo-50 transition duration-150">
+                                        <td class="px-6 py-4 whitespace-nowrap font-semibold text-lg text-indigo-800">${item.time}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-900">${item.direction}</td>
+                                        <td class="px-6 py-4 whitespace-nowrap text-gray-500">${item.train}</td>
+                                    </tr>
+                                `).join('')}
+                            </tbody>
+                        </table>
+                    </div>
+                `;
+
+            } catch (e) {
+                console.error(e);
+                document.getElementById('error-text').textContent = `Chyba: ${e.message}`;
+                document.getElementById('error-message').classList.remove('hidden');
             }
         }
 
-        // Spustit hned a pak každou sekundu
-        document.addEventListener('DOMContentLoaded', () => {
-             // Zajištění, že se skript spustí, i když prohlížeč obnovuje data
-             updateWidget();
-             setInterval(updateWidget, 1000);
-        });
+        function updateDisplayAndTime() {
+            const dateInput = document.getElementById('date-input').value;
+            const timeInput = document.getElementById('time-input').value;
+            let displayTime = new Date();
 
+            if (dateInput && timeInput) {
+                displayTime = new Date(`${dateInput}T${timeInput}:00`);
+            } else {
+                const now = new Date();
+                document.getElementById('date-input').value = now.toISOString().substring(0, 10);
+                document.getElementById('time-input').value = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
+                displayTime = now;
+            }
+
+            const formattedDate = displayTime.toLocaleDateString('cs-CZ', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+            const formattedTime = displayTime.toLocaleTimeString('cs-CZ', { hour: '2-digit', minute: '2-digit' });
+            let infoText = `Zobrazeno pro: ${formattedDate}, ${formattedTime}`;
+            if (isHoliday(displayTime)) infoText += ' (Státní svátek)';
+            document.getElementById('current-info').textContent = infoText;
+
+            renderSchedule(displayTime);
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            updateDisplayAndTime();
+            document.getElementById('apply-time-btn').addEventListener('click', updateDisplayAndTime);
+            setInterval(() => {
+                if (!document.getElementById('date-input').value || !document.getElementById('time-input').value) {
+                    updateDisplayAndTime();
+                }
+            }, 60000);
+        });
     </script>
 </body>
 </html>
