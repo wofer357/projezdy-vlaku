@@ -8,7 +8,7 @@
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <style>
         :root {
-            --poster-yellow: #FFD600; /* Vivid poster yellow */
+            --poster-yellow: #FFD600;
             --poster-black: #1a1a1a;
             --paper-white: #ffffff;
             --alert-red: #D32F2F;
@@ -27,7 +27,6 @@
             box-sizing: border-box;
         }
 
-        /* The main "Card" mimicking a widget */
         .widget-card {
             background-color: var(--poster-yellow);
             width: 100%;
@@ -40,7 +39,6 @@
             border: 4px solid var(--poster-black);
         }
 
-        /* Header Section */
         .widget-header {
             padding: 20px 24px 10px;
             display: flex;
@@ -67,7 +65,6 @@
             text-transform: uppercase;
         }
 
-        /* Main Countdown Section */
         .countdown-section {
             text-align: center;
             padding: 10px 0 30px;
@@ -88,7 +85,6 @@
             margin-top: 5px;
         }
 
-        /* Train Info Box */
         .info-box {
             background: var(--paper-white);
             margin: 0 16px 16px;
@@ -123,7 +119,6 @@
             border-radius: 8px;
         }
 
-        /* Next Trains List */
         .next-list {
             display: flex;
             flex-direction: column;
@@ -152,7 +147,6 @@
             color: var(--poster-black);
         }
 
-        /* Error/Empty State */
         .empty-state {
             display: none;
             text-align: center;
@@ -165,7 +159,6 @@
             display: block;
         }
 
-        /* Footer */
         .footer {
             text-align: center;
             padding: 12px;
@@ -174,7 +167,6 @@
             font-weight: 600;
         }
         
-        /* Mobile adjustments */
         @media (max-width: 400px) {
             .countdown-time {
                 font-size: 60px;
@@ -193,7 +185,6 @@
             <div id="day-badge" class="day-indicator">Dnes</div>
         </div>
 
-        <!-- Main Display -->
         <div id="active-view">
             <div class="countdown-section">
                 <div id="countdown" class="countdown-time">--</div>
@@ -201,7 +192,6 @@
             </div>
 
             <div class="info-box">
-                <!-- Big Next Train -->
                 <div class="primary-info">
                     <div>
                         <div style="font-size: 12px; color:#666; margin-bottom:4px;">SMĚR</div>
@@ -213,17 +203,13 @@
                     </div>
                 </div>
 
-                <!-- Upcoming list -->
                 <div class="next-list">
                     <div class="list-label">Následující spoje</div>
-                    <div id="upcoming-container">
-                        <!-- JS fills this -->
-                    </div>
+                    <div id="upcoming-container"></div>
                 </div>
             </div>
         </div>
 
-        <!-- Empty State (No more trains) -->
         <div id="empty-view" class="empty-state">
             <span class="empty-state-icon">😴</span>
             <strong>Pro dnešek hotovo</strong>
@@ -235,7 +221,6 @@
         </div>
     </div>
 
-    <!-- NOVÁ DATA DLE POSKYTNUTÉHO CSV SOUBORU -->
     <script id="csv-data" type="text/csv">
 Čas,Směr,Vlak,1,2,3,4,5,6,7,Svátek
 0:49,Dejvice,9848,x,x,x,x,x,x,x,x
@@ -250,65 +235,45 @@
 6:13,Výstav.,Sp 1561,x,x,x,x,x,-,-,-
 6:16,Dejvice,19734,-,-,-,-,-,x,x,x
 6:25,Výstav.,9801,x,x,x,x,x,x,x,x
-6:37,Výstav.,R1231,x,x,x,x,x,x,x,x
+6:37,Výstav.,R1231,x,x,x,x,x,x,-,-
 6:40,Dejvice,9810,x,x,x,x,x,-,-,-
-6:58,Výstav.,9803,x,x,x,x,x,x,x,x
-7:00,Dejvice,19738,-,-,-,-,-,x,x,x
-7:13,Výstav.,9857,x,x,x,x,x,-,-,-
-7:21,Dejvice,Sp 1560,x,x,x,x,x,-,-,-
-7:24,Výstav.,R1233,x,x,x,x,x,-,-,-
-7:37,Výstav.,9805,x,x,x,x,x,x,x,x
-7:40,Dejvice,9804,x,x,x,x,x,-,-,-
-7:58,Výstav.,9813,x,x,x,x,x,-,-,-
-8:00,Dejvice,19740,x,x,x,x,x,-,-,-
-8:13,Výstav.,Sp 1563,x,x,x,x,x,-,-,-
-8:21,Dejvice,9806,x,x,x,x,x,x,x,x
-8:24,Výstav.,R1235,x,x,x,x,x,-,-,-
-8:37,Výstav.,9807,x,x,x,x,x,x,x,x
-8:40,Dejvice,9812,x,x,x,x,x,-,-,-
-9:00,Dejvice,19742,x,x,x,x,x,-,-,-
-9:13,Výstav.,9859,x,x,x,x,x,-,-,-
-9:21,Dejvice,Sp 1562,x,x,x,x,x,-,-,-
-9:24,Výstav.,9809,x,x,x,x,x,x,x,x
-9:37,Výstav.,9815,x,x,x,x,x,-,-,-
-9:40,Dejvice,9808,x,x,x,x,x,x,x,x
-9:58,Výstav.,9817,x,x,x,x,x,x,x,x
-10:00,Dejvice,19744,x,x,x,x,x,x,x,x
-10:13,Výstav.,9861,x,x,x,x,x,x,x,x
-10:21,Dejvice,Sp 1564,x,x,x,x,x,x,x,x
-10:24,Výstav.,9819,x,x,x,x,x,x,x,x
-10:37,Výstav.,9821,x,x,x,x,x,x,x,x
-10:40,Dejvice,9814,x,x,x,x,x,x,x,x
-10:58,Výstav.,9823,x,x,x,x,x,x,x,x
-11:00,Dejvice,19746,x,x,x,x,x,x,x,x
-11:13,Výstav.,9863,x,x,x,x,x,x,x,x
-11:21,Dejvice,Sp 1566,x,x,x,x,x,x,x,x
-11:24,Výstav.,9825,x,x,x,x,x,x,x,x
-11:37,Výstav.,9827,x,x,x,x,x,x,x,x
-11:40,Dejvice,9816,x,x,x,x,x,x,x,x
-11:58,Výstav.,9829,x,x,x,x,x,x,x,x
-12:00,Dejvice,19748,x,x,x,x,x,x,x,x
-12:13,Výstav.,9865,x,x,x,x,x,x,x,x
-12:21,Dejvice,Sp 1568,x,x,x,x,x,x,x,x
-12:24,Výstav.,R1237,x,x,x,x,x,x,x,x
-12:37,Výstav.,9831,x,x,x,x,x,x,x,x
-12:40,Dejvice,9818,x,x,x,x,x,x,x,x
-12:58,Výstav.,9833,x,x,x,x,x,x,x,x
-13:00,Dejvice,19750,x,x,x,x,x,x,x,x
-13:13,Výstav.,9867,x,x,x,x,x,x,x,x
-13:21,Dejvice,Sp 1570,x,x,x,x,x,x,x,x
-13:24,Výstav.,9835,x,x,x,x,x,x,x,x
-13:37,Výstav.,R1233,x,x,x,x,x,-,-,-
-13:40,Dejvice,9820,x,x,x,x,x,x,x,x
-13:58,Výstav.,9837,x,x,x,x,x,x,x,x
-14:00,Dejvice,19752,x,x,x,x,x,x,x,x
-14:13,Výstav.,9869,x,x,x,x,x,x,x,x
-14:21,Dejvice,Sp 1572,x,x,x,x,x,-,-,-
-14:24,Výstav.,9839,x,x,x,x,x,x,x,x
-14:37,Výstav.,9841,x,x,x,x,x,x,x,x
-14:40,Dejvice,9822,x,x,x,x,x,x,x,x
-14:58,Výstav.,9843,x,x,x,x,x,x,x,x
-15:00,Dejvice,19754,x,x,x,x,x,x,x,x
+6:42,Dejvice,9852,-,-,-,-,-,x,x,x
+7:00,Výstav.,9813,x,x,x,x,x,-,-,-
+7:07,Dejvice,R1230,x,x,x,x,x,x,x,x
+7:12,Výstav.,Sp 1560,x,x,x,x,x,-,-,-
+7:13,Výstav.,9859,-,-,-,-,-,x,x,x
+7:28,Výstav.,9815,x,x,x,x,x,-,-,-
+7:36,Dejvice,9812,x,x,x,x,x,x,x,x
+7:47,Výstav.,Sp 1565,x,x,x,x,x,x,x,x
+8:08,Dejvice,Sp 1562,x,x,x,x,x,x,x,x
+8:13,Výstav.,9815,x,x,x,x,x,x,x,x
+8:29,Výstav.,Sp 1567,x,x,x,x,x,-,-,-
+8:36,Dejvice,9854,x,x,x,x,x,x,x,x
+8:47,Výstav.,R1233,x,x,x,x,x,x,x,x
+9:07,Dejvice,R1232,x,x,x,x,x,x,x,x
+9:13,Výstav.,9819,x,x,x,x,x,x,x,x
+9:36,Dejvice,9814,x,x,x,x,x,x,x,x
+9:47,Výstav.,Sp 1569,x,x,x,x,x,x,x,x
+10:07,Dejvice,Sp 1564,x,x,x,x,x,x,x,x
+10:13,Výstav.,9821,x,x,x,x,x,x,x,x
+10:36,Dejvice,9856,x,x,x,x,x,x,x,x
+10:47,Výstav.,R1235,x,x,x,x,x,x,x,x
+11:07,Dejvice,Sp 1566,x,x,x,x,x,x,x,x
+11:13,Výstav.,Sp 1590,x,x,x,x,x,x,x,x
+11:36,Dejvice,9861,x,x,x,x,x,x,x,x
+11:47,Výstav.,Sp 1571,x,x,x,x,x,x,x,x
+12:07,Dejvice,Sp 1568,x,x,x,x,x,x,x,x
+12:13,Výstav.,9823,x,x,x,x,x,x,x,x
+12:36,Dejvice,9818,x,x,x,x,x,x,x,x
+12:47,Výstav.,Sp 1573,x,x,x,x,x,x,x,x
+13:07,Dejvice,R1234,x,x,x,x,x,x,x,x
+13:13,Výstav.,9863,x,x,x,x,x,x,x,x
+13:36,Dejvice,9820,x,x,x,x,x,x,x,x
+13:47,Výstav.,Sp 1575,x,x,x,x,x,x,x,x
+14:07,Dejvice,Sp 1570,x,x,x,x,x,x,x,x
+14:13,Výstav.,9825,x,x,x,x,x,x,x,x
+14:36,Dejvice,9822,x,x,x,x,x,x,x,x
+14:47,Výstav.,R1237,x,x,x,x,x,x,x,x
 15:07,Dejvice,R1236,x,x,x,x,x,x,x,x
 15:13,Výstav.,9827,x,x,x,x,x,x,x,x
 15:23,Dejvice,Sp1572,x,x,x,x,x,-,-,-
@@ -321,52 +286,94 @@
 16:47,Výstav.,R1239,x,x,x,x,x,x,x,x
 16:47,Dejvice,19736,x,x,x,x,x,x,x,x
 17:07,Dejvice,R1238,x,x,x,x,x,x,x,x
-17:13,Výstav.,9833,x,x,x,x,x,x,x,x
-17:23,Dejvice,Sp 1580,x,x,x,x,x,-,-,-
+17:13,Výstav.,9831,x,x,x,x,x,x,x,x
+17:23,Dejvice,Sp 1578,x,x,x,x,x,-,-,-
 17:36,Dejvice,9828,x,x,x,x,x,x,x,x
-17:47,Výstav.,Sp 1581,x,x,x,x,x,x,x,x
-18:07,Dejvice,9821,x,x,x,x,x,x,x,x
-18:13,Výstav.,9837,x,x,x,x,x,x,x,x
-18:23,Dejvice,Sp 1584,x,x,x,x,x,-,-,-
+17:47,Výstav.,Sp 1579,x,x,x,x,x,x,x,x
+18:07,Dejvice,Sp 1580,x,x,x,x,x,x,x,x
+18:13,Výstav.,9833,x,x,x,x,x,x,x,x
+18:23,Dejvice,Sp 1582,x,x,x,x,x,-,-,-
+18:29,Výstav.,19737,x,x,x,x,x,x,x,x
 18:36,Dejvice,9830,x,x,x,x,x,x,x,x
 18:47,Výstav.,R1241,x,x,x,x,x,x,x,x
-18:47,Dejvice,19742,x,x,x,x,x,x,x,x
 19:07,Dejvice,R1240,x,x,x,x,x,x,x,x
-19:13,Výstav.,9841,x,x,x,x,x,x,x,x
-19:23,Dejvice,Sp 1588,x,x,x,x,x,-,-,-
+19:13,Výstav.,9835,x,x,x,x,x,x,x,x
 19:36,Dejvice,9832,x,x,x,x,x,x,x,x
-19:47,Výstav.,Sp 1585,x,x,x,x,x,x,x,x
-20:07,Dejvice,9823,x,x,x,x,x,x,x,x
-20:13,Výstav.,9845,x,x,x,x,x,x,x,x
-20:23,Dejvice,Sp 1592,x,x,x,x,x,-,-,-
-20:36,Dejvice,9834,x,x,x,x,x,x,x,x
-20:47,Výstav.,R1243,x,x,x,x,x,x,x,x
-20:47,Dejvice,19746,x,x,x,x,x,x,x,x
-21:07,Dejvice,R1242,x,x,x,x,x,x,x,x
-21:13,Výstav.,9849,x,x,x,x,x,x,x,x
-21:23,Dejvice,Sp 1596,x,x,x,x,x,-,-,-
-21:36,Dejvice,9836,x,x,x,x,x,x,x,x
-21:47,Výstav.,Sp 1589,x,x,x,x,x,x,x,x
-22:07,Dejvice,9825,x,x,x,x,x,x,x,x
-22:13,Výstav.,9853,x,x,x,x,x,x,x,x
-22:23,Dejvice,Sp 1600,x,x,x,x,x,-,-,-
-22:36,Dejvice,9838,x,x,x,x,x,x,x,x
-22:47,Výstav.,R1245,x,x,x,x,x,x,x,x
-22:47,Dejvice,19750,x,x,x,x,x,x,x,x
-23:07,Dejvice,R1244,x,x,x,x,x,x,x,x
-23:13,Výstav.,9857,x,x,x,x,x,x,x,x
-23:23,Dejvice,Sp 1604,x,x,x,x,x,-,-,-
-23:36,Dejvice,9840,x,x,x,x,x,x,x,x
-23:47,Výstav.,Sp 1593,x,x,x,x,x,x,x,x
+19:47,Výstav.,Sp 1581,x,x,x,x,x,x,x,x
+20:07,Dejvice,Sp 1584,x,x,x,x,x,x,x,x
+20:13,Výstav.,9837,x,x,x,x,x,x,x,x
+20:36,Dejvice,9858,x,x,x,x,x,x,x,x
+20:46,Výstav.,R1243,-,-,-,-,-,-,x,x
+21:07,Dejvice,Sp 1586,x,x,x,x,x,-,x,x
+21:13,Výstav.,R1242,x,x,x,x,x,x,x,x
+21:36,Dejvice,9860,x,x,x,x,x,x,x,x
+21:47,Výstav.,Sp 1583,x,x,x,x,x,x,x,x
+22:07,Dejvice,Sp 1588,x,x,x,x,x,x,x,x
+22:13,Výstav.,9841,x,x,x,x,x,x,x,x
+22:36,Dejvice,9834,x,x,x,x,x,x,x,x
+23:17,Výstav.,9865,x,x,x,x,x,x,x,x
+23:46,Dejvice,9862,x,x,x,x,x,x,x,x
+23:54,Výstav.,9807,x,x,x,x,x,-,-,-
     </script>
 
     <script>
-        // Data o státních svátcích pro rok 2025
-        const STATE_HOLIDAYS_2025 = [
-            "2025-01-01", "2025-04-18", "2025-04-21", "2025-05-01", 
-            "2025-05-08", "2025-07-05", "2025-07-06", "2025-09-28", 
-            "2025-10-28", "2025-11-17", "2025-12-24", "2025-12-25", "2025-12-26"
-        ].map(d => new Date(d).toDateString());
+        // --- AUTOMATICKÝ VÝPOČET SVÁTKŮ ---
+
+        function getEasterSunday(year) {
+            // Standardní algoritmus pro výpočet Velikonoční neděle
+            const f = Math.floor,
+                G = year % 19,
+                C = f(year / 100),
+                H = (C - f(C / 4) - f((8 * C + 13) / 25) + 19 * G + 15) % 30,
+                I = H - f(H / 28) * (1 - f(29 / (H + 1)) * f((21 - G) / 11)),
+                J = (year + f(year / 4) + I + 2 - C + f(C / 4)) % 7,
+                L = I - J,
+                month = 3 + f((L + 40) / 44),
+                day = L + 28 - 31 * f(month / 4);
+            return new Date(year, month - 1, day);
+        }
+
+        function getCzechHolidays(year) {
+            // 1. Pevné svátky
+            const fixedHolidays = [
+                "01-01", // Nový rok
+                "05-01", // Svátek práce
+                "05-08", // Den vítězství
+                "07-05", // Cyril a Metoděj
+                "07-06", // Jan Hus
+                "09-28", // Den české státnosti
+                "10-28", // Vznik ČSR
+                "11-17", // Den boje za svobodu
+                "12-24", // Štědrý den
+                "12-25", // 1. svátek vánoční
+                "12-26"  // 2. svátek vánoční
+            ].map(d => `${year}-${d}`);
+
+            // 2. Pohyblivé svátky (Velikonoce)
+            const easterSunday = getEasterSunday(year);
+            
+            const goodFriday = new Date(easterSunday);
+            goodFriday.setDate(easterSunday.getDate() - 2);
+            
+            const easterMonday = new Date(easterSunday);
+            easterMonday.setDate(easterSunday.getDate() + 1);
+
+            // Formátování na YYYY-MM-DD
+            const formatDate = (date) => {
+                const y = date.getFullYear();
+                const m = (date.getMonth() + 1).toString().padStart(2, '0');
+                const d = date.getDate().toString().padStart(2, '0');
+                return `${y}-${m}-${d}`;
+            };
+
+            return [
+                ...fixedHolidays,
+                formatDate(goodFriday),
+                formatDate(easterMonday)
+            ];
+        }
+
+        // --- HLAVNÍ LOGIKA ---
 
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
@@ -383,7 +390,7 @@
                 const values = line.split(',').map(v => v.trim());
                 if (values.length !== headers.length) return null;
                 return {
-                    time: values[headerMap['Čas']], // Teď je v CSV formát H:MM
+                    time: values[headerMap['Čas']],
                     direction: values[headerMap['Směr']],
                     train: values[headerMap['Vlak']],
                     days: {
@@ -397,7 +404,16 @@
         }
 
         function isHoliday(date) {
-            return STATE_HOLIDAYS_2025.includes(date.toDateString());
+            const year = date.getFullYear();
+            // Generujeme svátky pro aktuální rok automaticky
+            const holidays = getCzechHolidays(year);
+            
+            // Převedeme kontrolované datum na string YYYY-MM-DD
+            const checkDate = date.getFullYear() + '-' + 
+                             (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                             date.getDate().toString().padStart(2, '0');
+                             
+            return holidays.includes(checkDate);
         }
 
         function getDayNameCZ() {
@@ -421,13 +437,8 @@
                     if (isNaN(hourStr) || isNaN(minuteStr)) return false;
                     const departureInMinutes = hourStr * 60 + minuteStr;
 
-                    // Jen budoucí vlaky (nebo aktuální minuta)
                     if (departureInMinutes < nowInMinutes) return false;
 
-                    // Filtrování dnů:
-                    // Zkontrolujeme, zda v daném sloupci pro dnešní den (nebo svátek) je 'x'.
-                    // '-' se nerovná 'x', takže vlak nepojede.
-                    
                     if (isTodayHoliday) {
                         return item.days.holiday === 'x';
                     } else {
@@ -435,7 +446,7 @@
                     }
                 });
                 
-                // --- UI UPDATE ---
+                // UI UPDATE
                 document.getElementById("day-badge").textContent = getDayNameCZ() + (isTodayHoliday ? " (Svátek)" : "");
 
                 const activeView = document.getElementById("active-view");
@@ -458,7 +469,6 @@
                 const diffMs = nextDate - now;
                 const diffMins = Math.floor(diffMs / 60000);
 
-                // Update Countdown
                 const countdownEl = document.getElementById("countdown");
                 const statusEl = document.getElementById("status-text");
 
@@ -480,11 +490,9 @@
                     countdownEl.style.color = "var(--poster-black)";
                 }
 
-                // Update Details
                 document.getElementById("next-dir").textContent = nextTrain.direction;
                 document.getElementById("next-time").textContent = nextTrain.time;
 
-                // Update List
                 const upcomingContainer = document.getElementById("upcoming-container");
                 upcomingContainer.innerHTML = "";
                 const nextFew = upcomingTrains.slice(1, 4);
@@ -504,7 +512,6 @@
             }
         }
 
-        // Init
         document.addEventListener('DOMContentLoaded', () => {
             updateWidget();
             setInterval(updateWidget, 1000);
