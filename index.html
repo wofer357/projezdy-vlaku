@@ -147,6 +147,18 @@
             color: var(--poster-black);
         }
 
+        .tag-tomorrow {
+            font-size: 0.6em;
+            vertical-align: middle;
+            background: #eee;
+            color: #666;
+            padding: 2px 4px;
+            border-radius: 4px;
+            margin-left: 5px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
         .empty-state {
             display: none;
             text-align: center;
@@ -212,8 +224,8 @@
 
         <div id="empty-view" class="empty-state">
             <span class="empty-state-icon">😴</span>
-            <strong>Pro dnešek hotovo</strong>
-            <p style="font-size: 14px; opacity: 0.8; margin-top:5px;">Další vlak jede až zítra ráno.</p>
+            <strong>Žádné spoje</strong>
+            <p style="font-size: 14px; opacity: 0.8; margin-top:5px;">Nenalezeny žádné vlaky pro dnešek ani zítřek.</p>
         </div>
 
         <div class="footer">
@@ -317,10 +329,8 @@
     </script>
 
     <script>
-        // --- AUTOMATICKÝ VÝPOČET SVÁTKŮ ---
-
+        // --- 1. Výpočet svátků (Automaticky pro jakýkoliv rok) ---
         function getEasterSunday(year) {
-            // Standardní algoritmus pro výpočet Velikonoční neděle
             const f = Math.floor,
                 G = year % 19,
                 C = f(year / 100),
@@ -334,31 +344,17 @@
         }
 
         function getCzechHolidays(year) {
-            // 1. Pevné svátky
             const fixedHolidays = [
-                "01-01", // Nový rok
-                "05-01", // Svátek práce
-                "05-08", // Den vítězství
-                "07-05", // Cyril a Metoděj
-                "07-06", // Jan Hus
-                "09-28", // Den české státnosti
-                "10-28", // Vznik ČSR
-                "11-17", // Den boje za svobodu
-                "12-24", // Štědrý den
-                "12-25", // 1. svátek vánoční
-                "12-26"  // 2. svátek vánoční
+                "01-01", "05-01", "05-08", "07-05", "07-06", 
+                "09-28", "10-28", "11-17", "12-24", "12-25", "12-26"
             ].map(d => `${year}-${d}`);
 
-            // 2. Pohyblivé svátky (Velikonoce)
             const easterSunday = getEasterSunday(year);
-            
             const goodFriday = new Date(easterSunday);
             goodFriday.setDate(easterSunday.getDate() - 2);
-            
             const easterMonday = new Date(easterSunday);
             easterMonday.setDate(easterSunday.getDate() + 1);
 
-            // Formátování na YYYY-MM-DD
             const formatDate = (date) => {
                 const y = date.getFullYear();
                 const m = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -366,15 +362,24 @@
                 return `${y}-${m}-${d}`;
             };
 
-            return [
-                ...fixedHolidays,
-                formatDate(goodFriday),
-                formatDate(easterMonday)
-            ];
+            return [...fixedHolidays, formatDate(goodFriday), formatDate(easterMonday)];
         }
 
-        // --- HLAVNÍ LOGIKA ---
+        function isHoliday(date) {
+            const year = date.getFullYear();
+            const holidays = getCzechHolidays(year);
+            const checkDate = date.getFullYear() + '-' + 
+                             (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
+                             date.getDate().toString().padStart(2, '0');
+            return holidays.includes(checkDate);
+        }
 
+        function getDayNameCZ() {
+            const days = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
+            return days[new Date().getDay()];
+        }
+
+        // --- 2. Parsování CSV ---
         function parseCSV(csv) {
             const lines = csv.trim().split('\n');
             if (lines.length < 2) return [];
@@ -403,51 +408,46 @@
             }).filter(item => item !== null);
         }
 
-        function isHoliday(date) {
-            const year = date.getFullYear();
-            // Generujeme svátky pro aktuální rok automaticky
-            const holidays = getCzechHolidays(year);
-            
-            // Převedeme kontrolované datum na string YYYY-MM-DD
-            const checkDate = date.getFullYear() + '-' + 
-                             (date.getMonth() + 1).toString().padStart(2, '0') + '-' + 
-                             date.getDate().toString().padStart(2, '0');
-                             
-            return holidays.includes(checkDate);
-        }
-
-        function getDayNameCZ() {
-            const days = ["Neděle", "Pondělí", "Úterý", "Středa", "Čtvrtek", "Pátek", "Sobota"];
-            return days[new Date().getDay()];
-        }
-
+        // --- 3. Hlavní logika ---
         function updateWidget() {
             try {
                 const csvContent = document.getElementById('csv-data').textContent;
                 const schedule = parseCSV(csvContent);
                 const now = new Date();
-                
                 const nowInMinutes = now.getHours() * 60 + now.getMinutes();
-                let dayOfWeek = now.getDay(); 
-                const dayIndex = dayOfWeek === 0 ? 7 : dayOfWeek; 
-                const isTodayHoliday = isHoliday(now);
 
-                const upcomingTrains = schedule.filter(item => {
-                    const [hourStr, minuteStr] = item.time.split(':').map(Number);
-                    if (isNaN(hourStr) || isNaN(minuteStr)) return false;
-                    const departureInMinutes = hourStr * 60 + minuteStr;
+                // Dnešek
+                let todayIndex = now.getDay() === 0 ? 7 : now.getDay();
+                let todayIsHoliday = isHoliday(now);
 
-                    if (departureInMinutes < nowInMinutes) return false;
+                // Zítřek
+                const tomorrow = new Date(now);
+                tomorrow.setDate(tomorrow.getDate() + 1);
+                tomorrow.setHours(0, 0, 0, 0);
+                let tomorrowIndex = tomorrow.getDay() === 0 ? 7 : tomorrow.getDay();
+                let tomorrowIsHoliday = isHoliday(tomorrow);
 
-                    if (isTodayHoliday) {
-                        return item.days.holiday === 'x';
-                    } else {
-                        return item.days[dayIndex.toString()] === 'x';
-                    }
-                });
+                // Filtrace dnešních vlaků (jen ty co ještě neujely)
+                const trainsToday = schedule.filter(item => {
+                    const [h, m] = item.time.split(':').map(Number);
+                    const depMins = h * 60 + m;
+                    if (depMins < nowInMinutes) return false; // Už ujel
+
+                    if (todayIsHoliday) return item.days.holiday === 'x';
+                    return item.days[todayIndex] === 'x';
+                }).map(t => ({ ...t, date: now, isTomorrow: false }));
+
+                // Filtrace zítřejších vlaků (všechny)
+                const trainsTomorrow = schedule.filter(item => {
+                    if (tomorrowIsHoliday) return item.days.holiday === 'x';
+                    return item.days[tomorrowIndex] === 'x';
+                }).map(t => ({ ...t, date: tomorrow, isTomorrow: true }));
+
+                // Spojíme seznamy: nejdřív zbytek dneška, pak zítřek
+                const upcomingTrains = [...trainsToday, ...trainsTomorrow];
                 
                 // UI UPDATE
-                document.getElementById("day-badge").textContent = getDayNameCZ() + (isTodayHoliday ? " (Svátek)" : "");
+                document.getElementById("day-badge").textContent = getDayNameCZ() + (todayIsHoliday ? " (Svátek)" : "");
 
                 const activeView = document.getElementById("active-view");
                 const emptyView = document.getElementById("empty-view");
@@ -463,12 +463,15 @@
 
                 const nextTrain = upcomingTrains[0];
                 const [nextH, nextM] = nextTrain.time.split(":").map(Number);
-                const nextDate = new Date();
+                
+                // Nastavení přesného data odjezdu
+                const nextDate = new Date(nextTrain.date);
                 nextDate.setHours(nextH, nextM, 0);
 
                 const diffMs = nextDate - now;
                 const diffMins = Math.floor(diffMs / 60000);
 
+                // Odpočet
                 const countdownEl = document.getElementById("countdown");
                 const statusEl = document.getElementById("status-text");
 
@@ -490,9 +493,17 @@
                     countdownEl.style.color = "var(--poster-black)";
                 }
 
+                // Detaily
                 document.getElementById("next-dir").textContent = nextTrain.direction;
-                document.getElementById("next-time").textContent = nextTrain.time;
+                
+                // Přidání "Zítra" pokud je to zítra
+                const timeEl = document.getElementById("next-time");
+                timeEl.innerHTML = nextTrain.time;
+                if (nextTrain.isTomorrow) {
+                    timeEl.innerHTML += ' <span style="font-size:0.5em; vertical-align:middle; text-transform:uppercase; color:#666;">(Zítra)</span>';
+                }
 
+                // Seznam dalších spojů
                 const upcomingContainer = document.getElementById("upcoming-container");
                 upcomingContainer.innerHTML = "";
                 const nextFew = upcomingTrains.slice(1, 4);
@@ -503,7 +514,13 @@
                     nextFew.forEach(train => {
                         const row = document.createElement("div");
                         row.className = "next-item";
-                        row.innerHTML = `<span>${train.direction}</span> <span>${train.time}</span>`;
+                        
+                        let timeHtml = train.time;
+                        if (train.isTomorrow) {
+                            timeHtml += `<span class="tag-tomorrow">Zítra</span>`;
+                        }
+
+                        row.innerHTML = `<span>${train.direction}</span> <span>${timeHtml}</span>`;
                         upcomingContainer.appendChild(row);
                     });
                 }
