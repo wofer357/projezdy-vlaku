@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Jízdní řád Widget</title>
+    <title>Kdy jede vlak?</title>
     
-    <!-- FAVICON A IKONA (Updated to PNG) -->
+    <!-- FAVICON A IKONA -->
     <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
     
@@ -71,6 +71,7 @@
             letter-spacing: 1px;
             opacity: 0.8;
             margin: 0;
+            max-width: 70%; /* Aby text nelezl do odznaku */
         }
 
         .day-indicator {
@@ -360,7 +361,12 @@
             border-bottom: 1px solid #eee;
         }
 
-        @media (max-width: 400px) {
+        /* MEDIA QUERIES */
+        @media (max-width: 480px) {
+            body {
+                align-items: flex-start; /* Zarovná kartu nahoru místo na střed */
+                padding-top: 20px; /* Menší mezera od horního okraje */
+            }
             .countdown-time { font-size: 60px; }
             .widget-header { padding: 15px 20px 5px; }
         }
@@ -372,7 +378,7 @@
         
         <!-- HEADER -->
         <div class="widget-header">
-            <h1 class="location-title">Odjezdy Vlaků</h1>
+            <h1 class="location-title">Kdy projede vlak?</h1>
             <div id="day-badge" class="day-indicator">Dnes</div>
         </div>
 
@@ -381,7 +387,7 @@
             <div id="active-view">
                 <div class="countdown-section">
                     <div id="countdown" class="countdown-time">--</div>
-                    <div id="status-text" class="countdown-label">minut do odjezdu</div>
+                    <div id="status-text" class="countdown-label">Minut do průjezdu</div>
                 </div>
 
                 <div class="info-box">
@@ -725,11 +731,11 @@
                     const h = Math.floor(diffMins / 60);
                     const m = diffMins % 60;
                     countdownEl.textContent = `${h}:${m.toString().padStart(2, '0')}`;
-                    statusEl.textContent = "hodin do odjezdu";
+                    statusEl.textContent = "Hodin do průjezdu";
                     countdownEl.style.fontSize = "60px";
                 } else {
                     countdownEl.textContent = diffMins;
-                    statusEl.textContent = "minut do odjezdu";
+                    statusEl.textContent = "Minut do průjezdu";
                     countdownEl.style.fontSize = "80px";
                 }
 
