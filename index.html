@@ -5,16 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Jízdní řád Widget</title>
     
-    <link rel="icon" type="image/jpeg" href="favicon.png">
+    <!-- FAVICON A IKONA (Updated to PNG) -->
+    <link rel="icon" type="image/png" href="favicon.png">
     <link rel="apple-touch-icon" href="favicon.png">
     
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     
+    <!-- VERCEL ANALYTICS IMPLEMENTATION -->
     <script type="module">
       import { inject } from 'https://cdn.jsdelivr.net/npm/@vercel/analytics/+esm';
       inject();
     </script>
+    <!-- END VERCEL ANALYTICS -->
+
     <style>
         :root {
             --poster-yellow: #FFD600;
@@ -223,7 +227,7 @@
             color: var(--poster-black);
         }
 
-        /* --- MODAL (FULL SCHEDULE) --- */
+        /* --- MODAL (FULL SCHEDULE & INFO) --- */
         .modal-overlay {
             position: absolute;
             top: 0;
@@ -275,6 +279,30 @@
             flex-grow: 1;
             overflow-y: auto;
             padding: 0;
+        }
+
+        /* INFO CONTENT STYLES */
+        .info-content {
+            padding: 24px;
+            font-size: 15px;
+            line-height: 1.5;
+            color: #333;
+        }
+        .info-content p {
+            margin-bottom: 15px;
+        }
+        .info-content a {
+            color: var(--poster-black);
+            font-weight: 700;
+            text-decoration: underline;
+        }
+        .disclaimer-box {
+            background: #f8f8f8;
+            border-left: 4px solid var(--poster-black);
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
         }
 
         /* TABLE */
@@ -342,11 +370,13 @@
 
     <div class="widget-card">
         
+        <!-- HEADER -->
         <div class="widget-header">
             <h1 class="location-title">Odjezdy Vlaků</h1>
             <div id="day-badge" class="day-indicator">Dnes</div>
         </div>
 
+        <!-- SCROLLABLE CONTENT (Main View) -->
         <div class="content-scroll">
             <div id="active-view">
                 <div class="countdown-section">
@@ -380,11 +410,14 @@
             </div>
         </div>
 
+        <!-- FOOTER -->
         <div class="footer">
             Automatická aktualizace
             <span class="footer-link" onclick="openSchedule()">Celý rozvrh</span>
+            <span class="footer-link" onclick="openInfo()">O co jde?</span>
         </div>
 
+        <!-- FULL SCHEDULE MODAL -->
         <div id="schedule-modal" class="modal-overlay">
             <div class="modal-header">
                 <h2>Celý jízdní řád</h2>
@@ -404,12 +437,47 @@
                         </tr>
                     </thead>
                     <tbody id="full-schedule-body">
-                        </tbody>
+                        <!-- Filled by JS -->
+                    </tbody>
                 </table>
             </div>
         </div>
+
+        <!-- INFO MODAL -->
+        <div id="info-modal" class="modal-overlay">
+            <div class="modal-header">
+                <h2>Více informací</h2>
+                <div class="close-btn" onclick="closeInfo()">×</div>
+            </div>
+            <div class="modal-body">
+                <div class="info-content">
+                    <p>
+                        Chodíte s dětmi mávat vlakům z mostu pod AVU? Nevíte, zda ještě můžete pozorovat veverky, nebo už máte přidat do kroku, abyste stihli průjezd vlaku? Neznáte jízdní řády z paměti?
+                    </p>
+                    <p>
+                        Tak to jsme na tom stejně. A proto jsem si nechal od AI udělat tuto jednoduchou stránku s jízdními řády, vycházející ze skvělé tabulky, která visí na mostě.
+                    </p>
+                    <p>
+                        Třeba se také někomu bude hodit! 🚂
+                    </p>
+                    <p>
+                        <strong>Přesná lokalita:</strong><br>
+                        <a href="https://mapy.cz/s/dadelenera" target="_blank">Otevřít na Mapy.cz</a>
+                    </p>
+                    
+                    <div class="disclaimer-box">
+                        <strong>Upozornění:</strong><br>
+                        Jedná se o nejdřívější čas průjezdu vlaku. Vlaky většinou jedou o 1-2 minuty později.<br>
+                        <br>
+                        <em>Aplikace nezohledňuje aktuální zpoždění vlaků.</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 
+    <!-- DATA -->
     <script id="csv-data" type="text/csv">
 Čas,Směr,Vlak,1,2,3,4,5,6,7,Svátek
 0:49,Dejvice,9848,x,x,x,x,x,x,x,x
@@ -704,7 +772,7 @@
             }
         }
 
-        // --- 4. Modální okno (Celý rozvrh) ---
+        // --- 4. Modální okna (Rozvrh & Info) ---
         function openSchedule() {
             const modal = document.getElementById('schedule-modal');
             const tbody = document.getElementById('full-schedule-body');
@@ -744,6 +812,18 @@
 
         function closeSchedule() {
             const modal = document.getElementById('schedule-modal');
+            modal.classList.remove('open');
+            setTimeout(() => { modal.style.display = 'none'; }, 300);
+        }
+
+        function openInfo() {
+            const modal = document.getElementById('info-modal');
+            modal.style.display = 'flex';
+            setTimeout(() => { modal.classList.add('open'); }, 10);
+        }
+
+        function closeInfo() {
+            const modal = document.getElementById('info-modal');
             modal.classList.remove('open');
             setTimeout(() => { modal.style.display = 'none'; }, 300);
         }
